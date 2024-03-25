@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Categoria;
+use App\Models\Producto;
 use Illuminate\Http\Request;
 
-class CategoriaController extends Controller
+class ProductoController extends Controller
 {
     public function index()
     {
-        $categorias = Categoria::with('producto')->paginate(10);
-        return response()->json($categorias);
+        $productos = Producto::with('categoria->name')->paginate(10);
+        return response()->json($productos);
     }
 
     public function store(Request $request)
@@ -20,15 +20,15 @@ class CategoriaController extends Controller
             // Puedes agregar más reglas de validación según sea necesario
         ]);
 
-        $categoria = Categoria::create($request->all());
+        $producto = Producto::create($request->all());
 
-        return response()->json($categoria, 201);
+        return response()->json($producto, 201);
     }
 
     public function show($id)
     {
-        $categoria = Categoria::with('producto')->findOrFail($id);
-        return response()->json($categoria);
+        $producto = Producto::with('categoria->name')->findOrFail($id);
+        return response()->json($producto);
     }
 
     public function update(Request $request, $id)
@@ -38,16 +38,16 @@ class CategoriaController extends Controller
             // Puedes agregar más reglas de validación según sea necesario
         ]);
 
-        $categoria = Categoria::findOrFail($id);
-        $categoria->update($request->all());
+        $producto = Producto::findOrFail($id);
+        $producto->update($request->all());
 
-        return response()->json($categoria, 200);
+        return response()->json($producto, 200);
     }
 
     public function destroy($id)
     {
-        $categoria = Categoria::findOrFail($id);
-        $categoria->delete();
+        $producto = Producto::findOrFail($id);
+        $producto->delete();
 
         return response()->json(null, 204);
     }

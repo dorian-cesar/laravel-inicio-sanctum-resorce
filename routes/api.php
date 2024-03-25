@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProductoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,11 +28,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
+Route::post('update-password', [AuthController::class, 'updatePassword']);
+
+
 
 Route::middleware(['auth:sanctum'])->group(function(){
 
     Route::get('logout', [AuthController::class, 'logout']);
+    Route::apiResource('productos', ProductoController::class);
     Route::apiResource('categorias', CategoriaController::class);
+    Route::post('update-password', [AuthController::class, 'updatePassword']);
+    
 
 });
 

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -45,5 +46,29 @@ class AuthController extends Controller
        // $request->user()->token()->revoke();
        auth()->user()->tokens()->delete();
         return response()->json(['message' => 'Successfully logged out']);
+    }
+
+    public function updatePassword(Request $request)
+    {
+        // Validar los datos de la solicitud
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|string|min:8|confirmed',
+        ]);
+
+        // Obtener el usuario autenticado
+        $user = Auth::user();
+
+        // Verificar si la contraseña actual proporcionada es correcta
+        if (!Hash::check($request->current_password, $user->password)) {
+            return response()->json(['message' => 'La contraseña actual es incorrecta'], 400);
+        }
+
+        // Actualizar la contraseña del usuario
+        $user->password = bcrypt($request->new_password);
+        $user->save();
+
+        // Devolver una respuesta exitosa
+        return response()->json(['message' => 'La contraseña se ha actualizado correctamente']);
     }
 }
